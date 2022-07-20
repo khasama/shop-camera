@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head') %>
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- slide trái -->
+        <%- include('../partials/left') %>
+            <!-- End slide trái -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+
+                    <!-- Top bar -->
+                    <%- include('../partials/top') %>
+                        <!-- End of Top bar -->
+
+                        <!-- Begin Page Content -->
+                        <div class="container-fluid" style="margin-top: 20px;">
+
+                            <!-- DataTales Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" style="display: inline;">List products
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Name</th>
+                                                    <th>Image</th>
+                                                    <th>Price</th>
+                                                    <th>Category</th>
+                                                    <th>Status</th>
+                                                    <th style="width: 25%;"><a href="javascript:void(0)"
+                                                            data-toggle="modal" data-target="#newProductModal">New</a>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% products.forEach(product=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%- products.indexOf(product) + 1; %>
+                                                        </td>
+                                                        <td>
+                                                            <%- product.name %>
+                                                        </td>
+                                                        <td> <img src="<%- product.thumb %>" width="150">
+                                                        </td>
+                                                        <td>
+                                                            <%- product.low %>
+                                                        </td>
+                                                        <td>
+                                                            <%- product.category.name %>
+                                                        </td>
+                                                        <td>
+                                                            <%- product.status %>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:void(0)" class="editProd"
+                                                                data-id="<%- product._id %>"
+                                                                onclick="getProd(this)">Edit</a> |
+                                                            <a href="javascript:void(0)" class="deleteProd"
+                                                                data-id="<%- product._id %>"
+                                                                data-img="<%- product.image %>">Delete</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="newProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 70%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">NEW PRODUCT</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="name">Name:</label>
+                                                    <input type="text" class="form-control" id="addNameProd"
+                                                        autocomplete="off">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="short">Short description:</label>
+                                                    <textarea id="addShortProd"></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="description">Description:</label>
+                                                    <textarea id="addProdDes"></textarea>
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <div class="w-50" style="margin-right: 1rem;">
+                                                        <label for="price">High price:</label>
+                                                        <input type="number" class="form-control" id="addHighPriceProd"
+                                                            autocomplete="off">
+                                                    </div>
+                                                    <div class="w-50">
+                                                        <label for="price">Low price:</label>
+                                                        <input type="number" class="form-control" id="addLowPriceProd"
+                                                            autocomplete="off">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <label for="price" style="line-height: 30px;">Image:</label>
+                                                    <input type="text" class="form-control ml-2" id="addThumbProd">
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <label for="category" style="line-height: 30px;">Category:</label>
+                                                    <select id="addCategoryProd" class="w-50 form-control ml-2">
+                                                        <% categories.forEach(category=> { %>
+                                                            <option value="<%- category._id %>">
+                                                                <%- category.name %>
+                                                            </option>
+                                                            <% }); %>
+                                                    </select>
+                                                </div>
+
+                                                <button id="createProduct" class="btn btn-primary">Create</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog"
+                                aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 70%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">EDIT PRODUCT</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="name">Name:</label>
+                                                    <input type="text" class="form-control" id="editNameProd"
+                                                        autocomplete="off">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="short">Short description:</label>
+                                                    <textarea id="editShortProd"></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="description">Description:</label>
+                                                    <textarea id="editProdDes"></textarea>
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <div class="w-50" style="margin-right: 1rem;">
+                                                        <label for="price">High price:</label>
+                                                        <input type="number" class="form-control" id="editHighPriceProd"
+                                                            autocomplete="off">
+                                                    </div>
+                                                    <div class="w-50">
+                                                        <label for="price">Low price:</label>
+                                                        <input type="number" class="form-control" id="editLowPriceProd"
+                                                            autocomplete="off">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <label for="price" style="line-height: 30px;">Image:</label>
+                                                    <input type="text" class="form-control ml-2" id="editThumbProd">
+                                                </div>
+                                                <div class="form-group d-flex">
+                                                    <label for="category" style="line-height: 30px;">Category:</label>
+                                                    <select id="editCategoryProd" class="w-50 form-control ml-2">
+                                                        <% categories.forEach(category=> { %>
+                                                            <option value="<%- category._id %>">
+                                                                <%- category.name %>
+                                                            </option>
+                                                            <% }); %>
+                                                    </select>
+                                                </div>
+
+                                                <button id="updateProduct" class="btn btn-primary">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- -->
+
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <%- include('../partials/footer') %>
+                    <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <%- include('../partials/bot') %>
+
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <div>
+            <%- include('partials/header') %>
+        </div>
+
+        <main class="content container">
+            <div class="row text-bg-light">
+                <div class="col-6 col-sm-6 col-md-4 col-lg-4 p-0">
+                    <img src="https://shopcongnghe24h.vn/wp-content/uploads/2022/05/IPC3612LB-SF28-A-2.jpg"
+                        width="100%">
+                </div>
+                <div class="col-6 col-sm-6 col-md-8 col-lg-8 p-2">
+                    <h3>
+                        <%- product.name %>
+                    </h3>
+                    <div class="price">
+                        <span class="text-decoration-line-through fs-6 me-2 text-muted">
+                            <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                }).format(product.high) %>
+                        </span>
+                        <span class="fs-4">
+                            <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                }).format(product.low) %>
+                        </span>
+                        <div>
+                            <%- product.short %>
+                        </div>
+                        <div>
+                            <input type="number" id="quantity" class="w-10" value="1">
+                            <button class="btn btn-primary">Thêm giỏ hàng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="desc mt-2 text-bg-light">
+                <h4>Mô tả</h4>
+                <%- product.description %>
+            </div>
+
+            <div class="other mt-2 text-bg-light p-2">
+                <h4>Sản phẩm cùng loại</h4>
+                <div class="slick">
+                    <% prodSameCategory.forEach(e=> { %>
+                        <div class="card">
+                            <a href="/product/<%- e.slug %>/<%- e._id %>" class="d-block position-relative">
+                                <span class="badge text-bg-danger position-absolute top-0 start-0 mt-2 ms-2">
+                                    <%- e.sale %>
+                                </span>
+                                <img src="<%- e.thumb %>" class="card-img-top">
+                                <div class="card-body">
+                                    <p class="card-text prod-name">
+                                        <%- e.name %>
+                                    </p>
+                                    <div class="price">
+                                        <span class="text-decoration-line-through fs-6 me-2 text-muted">
+                                            <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                                }).format(e.high) %>
+                                        </span>
+                                        <span class="fs-4">
+                                            <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                                }).format(e.low) %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <div>
+            <%- include('partials/header') %>
+        </div>
+
+        <div>
+            <%- include('partials/banner') %>
+        </div>
+
+        <main class="content container">
+            <h3>---Tất cả sản phẩm---</h3>
+            <div class="row justify-content-evenly">
+                <% products.forEach(product=> { %>
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 card p-0">
+                        <a href="/product/<%- product.slug %>/<%- product._id %>" class="d-block position-relative">
+                            <span class="badge text-bg-danger position-absolute top-0 start-0 mt-2 ms-2">
+                                <%- product.sale %>
+                            </span>
+                            <img src="<%- product.thumb %>" class="card-img-top">
+                            <div class="card-body">
+                                <p class="card-text prod-name">
+                                    <%- product.name %>
+                                </p>
+                                <div class="price">
+                                    <span class="text-decoration-line-through fs-6 me-2 text-muted">
+                                        <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                            }).format(product.high) %>
+                                    </span>
+                                    <span class="fs-4">
+                                        <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                            }).format(product.low) %>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <% }); %>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
