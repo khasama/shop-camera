@@ -12,6 +12,32 @@ $(document).ready(function () {
         autoplaySpeed: 2000,
     });
 
+    $("#add-cart").click(() => {
+        const id = $("#id-prod").val();
+        const quantity = $("#quantity").val();
+
+        if (id && quantity) {
+            $.ajax({
+                type: "POST",
+                url: "/add-cart",
+                data: {
+                    id,
+                    quantity,
+                },
+                success: (rs) => {
+                    if (rs.status == "success") {
+                        alert("thêm thành công");
+                        location.reload();
+                    } else {
+                        alert(rs.message);
+                    }
+                },
+            });
+        } else {
+            alert("Thiếu chi rồi kìa");
+        }
+    });
+
     $("#user-register").click(() => {
         const email = $("#register-email").val();
         const username = $("#register-username").val();

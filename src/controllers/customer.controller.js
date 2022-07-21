@@ -12,9 +12,8 @@ CustomerController.home = async (req, res) => {
     res.render("customer", {
         products,
         categories,
-        user: (req.session.user = undefined
-            ? JSON.parse(req.session.user)
-            : req.session.user),
+        user: req.session.user,
+        cart: req.session.cart,
     });
 };
 
@@ -31,10 +30,73 @@ CustomerController.prodDetail = async (req, res) => {
         product: product[0],
         categories,
         prodSameCategory,
-        user: (req.session.user = undefined
-            ? JSON.parse(req.session.user)
-            : req.session.user),
+        user: req.session.user,
+        cart: req.session.cart,
     });
+};
+
+CustomerController.showCart = async (req, res) => {
+    let cart = [];
+    let prodCart = [];
+    if (req.session.cart) {
+        cart = JSON.parse(req.session.cart);
+        for (const prod of cart) {
+            const product = await ProductModel.find({
+                _id: mongoose.Types.ObjectId(prod.id),
+            }).limit(1);
+            const p = {
+                name: product[0].name,
+                thumb: product[0].thumb,
+                low: product[0].low,
+                quantity: prod.quantity,
+            };
+            console.log(p);
+            prodCart.push(p);
+        }
+    }
+
+    // const _id = mongoose.Types.ObjectId(req.params.id);
+    // const product = await ProductModel.find({ _id })
+    //     .populate("category")
+    //     .limit(1);
+    const categories = await CategoryModel.find({});
+    // const prodSameCategory = await ProductModel.find({
+    //     category: product[0].category._id,
+    // }).limit(30);
+    res.render("customer/cart", {
+        categories,
+        user: req.session.user,
+        cart: req.session.cart,
+        prodCart,
+    });
+};
+
+CustomerController.addCart = async (req, res) => {
+    const id = req.body.id;
+    const quantity = parseInt(req.body.quantity);
+    const newCart = {
+        id,
+        quantity,
+    };
+    if (!req.session.cart) {
+        req.session.cart = JSON.stringify([newCart]);
+        // req.session.cart.push(cart);
+    } else {
+        let cart = JSON.parse(req.session.cart);
+        let index = -1;
+        cart.find((item, i) => {
+            if (item.id == id) {
+                index = i;
+            }
+        });
+        if (index >= 0) {
+            cart[index].quantity = cart[index].quantity + quantity;
+        } else {
+            cart.push(newCart);
+        }
+        req.session.cart = JSON.stringify(cart);
+    }
+    return res.status(200).json({ status: "success" });
 };
 
 CustomerController.login = async (req, res) => {
@@ -54,7 +116,7 @@ CustomerController.login = async (req, res) => {
                     role: user[0].role,
                 };
                 const accessToken = await signAccessToken(payload);
-                req.session.user = JSON.stringify(payload);
+                req.session.user = payload;
                 res.cookie("access_token", accessToken, {
                     secure: process.env.NODE_ENV !== "development",
                     httpOnly: true,

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <div>
+            <%- include('partials/header') %>
+        </div>
+
+        <main class="content container mt-2">
+            <h4>Giỏ hàng</h4>
+            <div class="row">
+                <div class="col-6 col-md-6 col-lg-8">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="w-20">Tên</th>
+                                <th scope="col">Ảnh</th>
+                                <th scope="col">Giá</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% prodCart.forEach(prod=> { %>
+                                <tr>
+                                    <td>
+                                        <%- prod.name %>
+                                    </td>
+                                    <td>
+                                        <img src="<%- prod.thumb %>" width="100">
+                                    </td>
+                                    <td>
+                                        <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                            }).format(prod.low) %>
+                                    </td>
+                                    <td>
+                                        <%- prod.quantity %>
+                                    </td>
+                                    <td>
+                                        <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                            }).format(parseInt(prod.low)*prod.quantity) %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6 col-md-6 col-lg-4"></div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

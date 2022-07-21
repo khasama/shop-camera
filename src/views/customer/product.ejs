@@ -37,13 +37,14 @@
                         </div>
                         <div>
                             <input type="number" id="quantity" class="w-10" value="1">
-                            <button class="btn btn-primary">Thêm giỏ hàng</button>
+                            <input type="hidden" id="id-prod" value="<%- product._id %>">
+                            <button class="btn btn-primary" id="add-cart">Thêm giỏ hàng</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="desc mt-2 text-bg-light">
+            <div class="desc mt-2 text-bg-light p-2">
                 <h4>Mô tả</h4>
                 <%- product.description %>
             </div>

@@ -4,7 +4,11 @@ const createError = require("http-errors");
 const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const Redis = require("ioredis");
+const RedisStore = require("connect-redis")(session);
 const connect = require("./src/configs/mongo");
+
+const clientRedis = new Redis();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +24,7 @@ app.set("views", "./src/views");
 
 app.use(
     session({
+        // store: new RedisStore({ client: clientRedis }),
         secret: "thisissecret",
         resave: false,
         saveUninitialized: true,

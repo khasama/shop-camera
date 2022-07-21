@@ -36,10 +36,10 @@
                             class="position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 me-1"><img
                                 src="https://img.icons8.com/ios-glyphs/30/000000/search--v1.png" /></button>
                     </form>
-                    <% if(user){ %>
+                    <% if(user) { %>
                         <div class="dropdown ms-auto">
                             <a class="nav-link" href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
-                                <%-JSON.parse(user).username %>
+                                <%- user.username %>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
@@ -58,7 +58,15 @@
 
                             <% } %>
 
-                                <a class="ms-3" href="javascript:void(0)">
+                                <a class="ms-3 position-relative" href="/cart">
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <% if(cart){ %>
+                                            <%- JSON.parse(cart).length %>
+                                                <% } else { %>
+                                                    0
+                                                    <% } %>
+                                    </span>
                                     <img src="https://img.icons8.com/ios-glyphs/24/FFFFFF/shopping-cart--v1.png" />
                                 </a>
                 </div>
