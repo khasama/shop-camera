@@ -19,6 +19,15 @@ const userSchema = new Schema(
             type: String,
             default: "unknow.jpg",
         },
+        fname: {
+            type: String,
+        },
+        phone: {
+            type: String,
+        },
+        address: {
+            type: String,
+        },
         role: {
             type: String,
             default: "normal",

@@ -5,6 +5,7 @@ const CustomerController = {};
 const ProductModel = require("../models/product.model");
 const CategoryModel = require("../models/category.model");
 const UserModel = require("../models/user.model");
+const OrderModel = require("../models/oder.model");
 
 CustomerController.home = async (req, res) => {
     const products = await ProductModel.find({}).limit(30);
@@ -50,19 +51,12 @@ CustomerController.showCart = async (req, res) => {
                 low: product[0].low,
                 quantity: prod.quantity,
             };
-            console.log(p);
             prodCart.push(p);
         }
     }
 
-    // const _id = mongoose.Types.ObjectId(req.params.id);
-    // const product = await ProductModel.find({ _id })
-    //     .populate("category")
-    //     .limit(1);
     const categories = await CategoryModel.find({});
-    // const prodSameCategory = await ProductModel.find({
-    //     category: product[0].category._id,
-    // }).limit(30);
+
     res.render("customer/cart", {
         categories,
         user: req.session.user,
@@ -99,6 +93,56 @@ CustomerController.addCart = async (req, res) => {
     return res.status(200).json({ status: "success" });
 };
 
+CustomerController.payment = async (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const address = req.body.address;
+    let cart = [];
+    let prodCart = [];
+    let total = 0;
+    if (name && email && phone && address) {
+        if (req.session.cart) {
+            cart = JSON.parse(req.session.cart);
+            for (const prod of cart) {
+                const product = await ProductModel.find({
+                    _id: mongoose.Types.ObjectId(prod.id),
+                }).limit(1);
+                const p = {
+                    name: product[0].name,
+                    id: product[0]._id,
+                    low: product[0].low,
+                    quantity: prod.quantity,
+                };
+                total += parseInt(product[0].low) * parseInt(prod.quantity);
+                prodCart.push(p);
+            }
+            const order = {
+                products: prodCart,
+                name,
+                phone,
+                email,
+                total,
+                address,
+            };
+            if (req.session.user) {
+                order.user = req.session.user.id;
+            }
+            const newOrder = new OrderModel(order);
+            await newOrder.save();
+            req.session.cart = undefined;
+            return res.status(200).json({
+                status: "success",
+            });
+        } else {
+            return res.status(200).json({
+                status: "failed",
+                message: "Chưa có gì trong giỏ hàng cả",
+            });
+        }
+    }
+};
+
 CustomerController.login = async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -117,11 +161,8 @@ CustomerController.login = async (req, res) => {
                 };
                 const accessToken = await signAccessToken(payload);
                 req.session.user = payload;
-                res.cookie("access_token", accessToken, {
-                    secure: process.env.NODE_ENV !== "development",
-                    httpOnly: true,
-                    maxAge: 3 * 60 * 60 * 1000,
-                });
+                req.session.token = accessToken;
+
                 return res.status(200).json({ status: "success" });
             } else {
                 return res
@@ -175,10 +216,12 @@ CustomerController.register = async (req, res) => {
 };
 
 CustomerController.logout = (req, res) => {
-    res.clearCookie("access_token");
-    req.session.destroy((err) => {
-        if (!err) return res.redirect("/");
-    });
+    req.session.user = undefined;
+    req.session.token = undefined;
+    return res.redirect("/");
+    // req.session.destroy((err) => {
+    //     if (!err) return res.redirect("/");
+    // });
 };
 
 module.exports = CustomerController;

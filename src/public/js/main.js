@@ -95,4 +95,63 @@ $(document).ready(function () {
             alert("Thiếu chi rồi kìa");
         }
     });
+
+    $("#btn-payment").click(() => {
+        const name = $("#payment-name").val();
+        const phone = $("#payment-phone").val();
+        const email = $("#payment-email").val();
+        const ttp = $("#select-ttp").val();
+        const qh = $("#select-qh").val();
+        const address = $("#payment-address").val();
+
+        if (name && phone && email && ttp && qh && address) {
+            const fullAddress = `${ttp} - ${qh} - ${address}`;
+            $.ajax({
+                type: "POST",
+                url: "/payment",
+                data: {
+                    name,
+                    phone,
+                    email,
+                    address: fullAddress,
+                },
+                success: (rs) => {
+                    if (rs.status == "success") {
+                        alert("Thanh toán thành công");
+                        window.location = "/";
+                    } else {
+                        alert(rs.message);
+                    }
+                },
+                error: (err) => {
+                    console.log(err);
+                },
+            });
+        } else {
+            alert("Thiếu thông tin");
+        }
+    });
+
+    function loadAddress() {
+        address.forEach((ele) => {
+            $("#select-ttp").append(
+                `<option data-qh="${ele.qh}" value="${ele.ttp}">${ele.ttp}</option>`
+            );
+        });
+
+        $("#select-ttp").change(function () {
+            $("#select-qh").html("<option>Quận / Huyện</option>");
+            const qh = $(this)
+                .find("option:selected")
+                .attr("data-qh")
+                .split(",");
+
+            qh.forEach((ele) => {
+                $("#select-qh").append(
+                    `<option value="${ele}">${ele}</option>`
+                );
+            });
+        });
+    }
+    loadAddress();
 });

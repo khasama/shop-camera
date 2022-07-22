@@ -8,7 +8,7 @@ const Redis = require("ioredis");
 const RedisStore = require("connect-redis")(session);
 const connect = require("./src/configs/mongo");
 
-const clientRedis = new Redis();
+// const clientRedis = new Redis();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
