@@ -16,15 +16,19 @@
         <main class="content container mt-2">
             <h4>Giỏ hàng</h4>
             <div class="row">
-                <div class="col-6 col-md-6 col-lg-8">
+                <div class="col-12 col-md-12 col-lg-8">
                     <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th scope="col" style="width: 30%;">Tên</th>
                                 <th scope="col">Ảnh</th>
                                 <th scope="col">Giá</th>
-                                <th scope="col">Số lượng</th>
+                                <th scope="col" style="min-width: 15%;">Số lượng</th>
                                 <th scope="col">Tổng</th>
+                                <th scope="col">
+                                    <img
+                                        src="https://img.icons8.com/external-tanah-basah-glyph-tanah-basah/24/000000/external-setting-essentials-pack-tanah-basah-glyph-tanah-basah.png" />
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,18 +45,25 @@
                                             }).format(prod.low) %>
                                     </td>
                                     <td>
-                                        <%- prod.quantity %>
+                                        <input type="number" value="<%- prod.quantity %>" min="1"
+                                            data-id="<%- prod.id %>" class="form-control cartProdQuan">
                                     </td>
-                                    <td>
+                                    <td class="total">
                                         <%- new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
                                             }).format(parseInt(prod.low)*prod.quantity) %>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0)" class="btn btn-danger delete-cart"
+                                            data-id="<%- prod.id %>">
+                                            <img src="https://img.icons8.com/ios-glyphs/30/000000/filled-trash.png" />
+                                        </a>
                                     </td>
                                 </tr>
                                 <% total=total + parseInt(prod.low)*prod.quantity; }) %>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-12 col-md-12 col-lg-4">
                     <div class="bg-light p-2">
                         <h3 class="text-center">Thanh toán</h3>
                         <div class="mt-2">

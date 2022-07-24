@@ -13,12 +13,8 @@
             <%- include('partials/header') %>
         </div>
 
-        <div>
-            <%- include('partials/banner') %>
-        </div>
-
         <main class="content container my-2">
-            <h3>---Tất cả sản phẩm---</h3>
+            <h3>---Tổng cộng <%- length %> sản phẩm---</h3>
             <div class="row justify-content-evenly products-list">
                 <% products.forEach(product=> { %>
                     <div class="col-6 col-sm-4 col-md-3 col-lg-2 card p-0">
@@ -55,6 +51,7 @@
 
     <script>
         let curentPage = 1;
+        const id = '<%- id %>';
         window.onscroll = () => {
             var winScroll =
                 document.body.scrollTop || document.documentElement.scrollTop;
@@ -65,42 +62,42 @@
             if (scrolled == 100) {
                 $.ajax({
                     type: "GET",
-                    url: `/products/${curentPage}`,
+                    url: `/cate-loadmore/${id}/${curentPage}`,
                     success: (rs) => {
                         if (rs.status == "success") {
                             const products = rs.data;
                             curentPage++;
                             products.forEach((ele) => {
                                 $(".products-list").append(`
-                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 card p-0">
-                            <a href="/product/${ele.slug}/${ele._id
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 card p-0">
+                                        <a href="/product/${ele.slug}/${ele._id
                                     }" class="d-block position-relative">
-                                <span class="badge text-bg-danger position-absolute top-0 start-0 mt-2 ms-2">
-                                    ${ele.sale}
-                                </span>
-                                <img src="${ele.thumb}" class="card-img-top">
-                                <div class="card-body">
-                                    <p class="card-text prod-name">
-                                        ${ele.name}
-                                    </p>
-                                    <div class="price">
-                                        <span class="text-decoration-line-through fs-6 me-2 text-muted">
-                                            ${new Intl.NumberFormat("vi-VN", {
+                                            <span class="badge text-bg-danger position-absolute top-0 start-0 mt-2 ms-2">
+                                                ${ele.sale}
+                                            </span>
+                                            <img src="${ele.thumb}" class="card-img-top">
+                                            <div class="card-body">
+                                                <p class="card-text prod-name">
+                                                    ${ele.name}
+                                                </p>
+                                                <div class="price">
+                                                    <span class="text-decoration-line-through fs-6 me-2 text-muted">
+                                                        ${new Intl.NumberFormat("vi-VN", {
                                         style: "currency",
                                         currency: "VND",
                                     }).format(ele.high)}
-                                        </span>
-                                        <span class="fs-4">
-                                            ${new Intl.NumberFormat("vi-VN", {
+                                                    </span>
+                                                    <span class="fs-4">
+                                                        ${new Intl.NumberFormat("vi-VN", {
                                         style: "currency",
                                         currency: "VND",
                                     }).format(ele.low)}
-                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
-                        `);
+                                `);
                             });
                         } else {
                             $(".load-more").html(

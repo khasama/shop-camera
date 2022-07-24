@@ -18,6 +18,18 @@ CustomerController.home = async (req, res) => {
     });
 };
 
+CustomerController.loadMore = async (req, res) => {
+    const page = parseInt(req.params.page);
+    const products = await ProductModel.find({})
+        .skip(page * 30)
+        .limit(30);
+    if (products.length > 0) {
+        return res.status(200).json({ status: "success", data: products });
+    } else {
+        return res.status(200).json({ status: "failed" });
+    }
+};
+
 CustomerController.prodDetail = async (req, res) => {
     const _id = mongoose.Types.ObjectId(req.params.id);
     const product = await ProductModel.find({ _id })
@@ -46,6 +58,7 @@ CustomerController.showCart = async (req, res) => {
                 _id: mongoose.Types.ObjectId(prod.id),
             }).limit(1);
             const p = {
+                id: prod.id,
                 name: product[0].name,
                 thumb: product[0].thumb,
                 low: product[0].low,
@@ -91,6 +104,30 @@ CustomerController.addCart = async (req, res) => {
         req.session.cart = JSON.stringify(cart);
     }
     return res.status(200).json({ status: "success" });
+};
+
+CustomerController.updateCart = async (req, res) => {
+    const change = req.body.change;
+    let cart = JSON.parse(req.session.cart);
+    cart.find((item, i) => {
+        if (item.id == change.id) {
+            cart[i].quantity = change.quantity;
+            req.session.cart = JSON.stringify(cart);
+        }
+    });
+    return res.status(200).json({ status: "success" });
+};
+
+CustomerController.deleteCart = async (req, res) => {
+    const id = req.body.id;
+    let cart = JSON.parse(req.session.cart);
+    cart.find((item, i) => {
+        if (item.id == id) {
+            cart.splice(i, 1);
+            req.session.cart = JSON.stringify(cart);
+            return res.status(200).json({ status: "success" });
+        }
+    });
 };
 
 CustomerController.payment = async (req, res) => {
@@ -222,6 +259,33 @@ CustomerController.logout = (req, res) => {
     // req.session.destroy((err) => {
     //     if (!err) return res.redirect("/");
     // });
+};
+
+CustomerController.category = async (req, res, next) => {
+    const id = mongoose.Types.ObjectId(req.params.id);
+    const products = await ProductModel.find({ category: id }).limit(30);
+    const lengthProds = await ProductModel.find({ category: id });
+    const categories = await CategoryModel.find({});
+    res.render("customer/category", {
+        products,
+        categories,
+        user: req.session.user,
+        cart: req.session.cart,
+        length: lengthProds.length,
+        id,
+    });
+};
+CustomerController.categoryLoadMore = async (req, res, next) => {
+    const id = mongoose.Types.ObjectId(req.params.id);
+    const page = parseInt(req.params.page);
+    const products = await ProductModel.find({ category: id })
+        .skip(page * 30)
+        .limit(30);
+    if (products.length > 0) {
+        return res.status(200).json({ status: "success", data: products });
+    } else {
+        return res.status(200).json({ status: "failed" });
+    }
 };
 
 module.exports = CustomerController;

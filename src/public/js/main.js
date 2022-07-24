@@ -38,6 +38,58 @@ $(document).ready(function () {
         }
     });
 
+    $(".cartProdQuan").change(function () {
+        const quantity = $(this).val();
+        const id = $(this).attr("data-id");
+        if (parseInt(quantity) > 0) {
+            const change = {
+                quantity,
+                id,
+            };
+            $.ajax({
+                type: "PUT",
+                url: "/update-cart",
+                data: {
+                    change,
+                },
+                success: (rs) => {
+                    if (rs.status == "success") {
+                        location.reload();
+                    } else {
+                        alert(rs.message);
+                    }
+                },
+                error: (err) => {
+                    console.log(err);
+                },
+            });
+            // console.log(
+            //     $(this).parent().parent().children(".total").html("123")
+            // );
+        }
+    });
+
+    $(".delete-cart").click(function () {
+        const id = $(this).attr("data-id");
+        $.ajax({
+            type: "delete",
+            url: "/delete-cart",
+            data: {
+                id,
+            },
+            success: (rs) => {
+                if (rs.status == "success") {
+                    location.reload();
+                } else {
+                    alert(rs.message);
+                }
+            },
+            error: (err) => {
+                console.log(err);
+            },
+        });
+    });
+
     $("#user-register").click(() => {
         const email = $("#register-email").val();
         const username = $("#register-username").val();

@@ -19,7 +19,8 @@
                             <ul class="dropdown-menu">
                                 <% categories.forEach(category=> { %>
                                     <li>
-                                        <a class="dropdown-item" href="javascript:void(0)">
+                                        <a class="dropdown-item"
+                                            href="/category/<%- category.slug %>/<%- category._id %>">
                                             <%- category.name %>
                                         </a>
                                     </li>
